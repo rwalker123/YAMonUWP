@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:YAMon.Converters"
+             x:Class="YAMon.View.BrowseItemsPage"
+             Title="{Binding Title}"
+             x:Name="BrowseItemsPage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:ByteToStringConverter x:Key="MyByteToStringConverter" />
+            <converters:PercentConverter x:Key="MyPercentConverter" />
+            <converters:PercentFontSizeConverter x:Key="MyPercentFontSizeConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <AbsoluteLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+            <StackLayout IsVisible="{Binding IsBusy}"
+                Padding="32"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1">
+                <Label Text="loading"/>
+                <ActivityIndicator IsRunning="{Binding IsBusy}" Color="{DynamicResource Accent}"/>
+            </StackLayout>
+            <StackLayout
+      AbsoluteLayout.LayoutFlags="All" 
+      AbsoluteLayout.LayoutBounds="0,0,1,1">
+                <ListView ItemsSource="{Binding Items}"
+                VerticalOptions="FillAndExpand"
+                HasUnevenRows="true"
+                ItemSelected="OnItemSelected"
+                RefreshCommand="{Binding LoadItemsCommand}"
+                IsPullToRefreshEnabled="true"
+                IsRefreshing="{Binding IsBusy, Mode=OneWay}"
+                CachingStrategy="RecycleElement"
+                x:Name="ListViewItems">
+                    <ListView.Header>
+                        <Grid Padding="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Text="Owner"
+                                       LineBreakMode="NoWrap"
+                                       Style="{DynamicResource ListItemDetailTextStyle}"/>
+                            <Label Grid.Column="1" Text="Total Usage"
+                                       LineBreakMode="NoWrap"
+                                       Style="{DynamicResource ListItemDetailTextStyle}"/>
+                            <Label Grid.Column="2" Text="% Monthly Allowance"
+                                       LineBreakMode="NoWrap"
+                                       Style="{DynamicResource ListItemDetailTextStyle}"/>
+                            <Label Grid.Column="3" Text="Forecast Monthly Usage"
+                                       LineBreakMode="NoWrap"
+                                       Style="{DynamicResource ListItemDetailTextStyle}"/>
+                        </Grid>
+                    </ListView.Header>
+                    <ListView.Footer>
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="Total Usage:" />
+                            <Label Text="{Binding TotalUsage, Converter={StaticResource MyByteToStringConverter}}" />
+                            <Label Text="{Binding TotalUsagePercent, Converter={StaticResource MyPercentConverter}}" />
+                        </StackLayout>
+                    </ListView.Footer>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Grid Padding="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Grid.Column="0" Text="{Binding Owner}"
+                                       LineBreakMode="NoWrap"
+                                       Style="{DynamicResource ListItemDetailTextStyle}"
+                                       FontSize="{Binding TotalPercent, Converter={StaticResource MyPercentFontSizeConverter}, ConverterParameter=16}"/>
+                                    <Label Grid.Column="1" Text="{Binding TotalUsage, Converter={StaticResource MyByteToStringConverter}}"
+                                       LineBreakMode="NoWrap"
+                                       Style="{DynamicResource ListItemDetailTextStyle}"
+                                       FontSize="{Binding TotalPercent, Converter={StaticResource MyPercentFontSizeConverter}, ConverterParameter=16}"/>
+                                    <Label Grid.Column="2" Text="{Binding GroupUsagePercent, Converter={StaticResource MyPercentConverter}}"
+                                       LineBreakMode="NoWrap"
+                                       Style="{DynamicResource ListItemDetailTextStyle}"
+                                       FontSize="{Binding TotalPercent, Converter={StaticResource MyPercentFontSizeConverter}, ConverterParameter=16}"/>
+                                    <Label Grid.Column="3" Text="{Binding MonthlyForecast, Converter={StaticResource MyByteToStringConverter}}"
+                                       LineBreakMode="NoWrap"
+                                       Style="{DynamicResource ListItemDetailTextStyle}"
+                                       FontSize="{Binding TotalPercent, Converter={StaticResource MyPercentFontSizeConverter}, ConverterParameter=16}"/>
+                                </Grid>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
+        </AbsoluteLayout>
+    </ContentPage.Content>
+</ContentPage>
