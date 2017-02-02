@@ -43,7 +43,6 @@ namespace YAMon.View
             MenuItems = new ObservableCollection<MasterMenuItem>(new[]
             {
                     new MasterMenuItem { Id = 0, Title = "Browse", TargetType = typeof(BrowseItemsPage) },
-                    new MasterMenuItem { Id = 1, Title = "My Items", TargetType = typeof(MyItemsPage) },
                     new MasterMenuItem { Id = 2, Title = "About", TargetType = typeof(AboutPage) },
             });
         }

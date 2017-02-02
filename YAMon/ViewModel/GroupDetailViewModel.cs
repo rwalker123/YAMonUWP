@@ -1,59 +1,41 @@
-﻿using YAMon.Helpers;
-using YAMon.Model;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xamarin.Forms;
+using YAMon.Helpers;
+using YAMon.Model;
 
 namespace YAMon.ViewModel
 {
     public class GroupDetailViewModel : ViewModelBase
     {
-        public Action<GroupDevice> OnFinished { get; set; }
+        private INavigation m_navigation;
+
+        public Action<Model.Device> OnFinished { get; set; }
+        public ObservableRangeCollection<Model.Device> Items { get; }
         public GroupDevice Item { get; set; }
-        public GroupDetailViewModel(GroupDevice item = null)
+        public Action<DeviceDetailViewModel> OnNavigateToDetails { get; set; }
+
+        public GroupDetailViewModel(INavigation nav, GroupDevice item = null)
         {
-            Title = item.Owner;
+            m_navigation = nav;
+            Title = BuildBreadCrumb(nav, item.Owner);
             Item = item;
-            SaveCommand = new Command(async () => await ExecuteSaveCommand());
+            Items = new ObservableRangeCollection<Model.Device>(item.Devices.OrderByDescending(x => x.TotalUsage).Select(x => x).ToList());
+            GoToDetailsCommand = new Command<string>(ExecuteGoToDetailsCommand);
         }
 
-        public Command SaveCommand { get; }
-
-        async Task ExecuteSaveCommand()
+        public Command<string> GoToDetailsCommand { get; }
+        void ExecuteGoToDetailsCommand(string id)
         {
             if (IsBusy)
                 return;
 
-            IsBusy = true;
+            var selectedItem = Items.FirstOrDefault(i => i.Id == id);
 
-            //var newItem = new MyItem
-            //{
-            //    DeviceName = Item.DeviceName,
-            //    Group = Item.Group,
-            //    Quantity = Quantity
-            //};
+            var detailsViewModel = new DeviceDetailViewModel(m_navigation, selectedItem);
+            detailsViewModel.OnFinished += OnFinished;
 
-            try
-            {
-                if (!Settings.IsLoggedIn)
-                {
-                    if (!await LoginViewModel.TryLoginAsync(StoreManager))
-                        return;
-                }
-
-                //await StoreManager.MyItemStore.InsertAsync(newItem);
-                //MyItemsViewModel.IsDirty = true;
-
-                IsBusy = false;
-                OnFinished?.Invoke(Item);
-            }
-            finally
-            {
-                IsBusy = false;
-            }
+            OnNavigateToDetails(detailsViewModel);
         }
     }
 }

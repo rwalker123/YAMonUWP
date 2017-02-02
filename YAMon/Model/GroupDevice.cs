@@ -64,7 +64,6 @@ namespace YAMon.Model
             {
                 double dailyAvg = (double)TotalUsage / (double)DateTime.Now.Day;
                 return (long)(dailyAvg * DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month));
-
             }
         }
     }

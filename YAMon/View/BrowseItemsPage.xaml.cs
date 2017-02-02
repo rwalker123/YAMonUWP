@@ -11,7 +11,7 @@ namespace YAMon.View
         public BrowseItemsPage()
         {
             InitializeComponent();
-            BindingContext = viewModel = new BrowseItemsViewModel();
+            BindingContext = viewModel = new BrowseItemsViewModel(this.Navigation);
 
             viewModel.OnNavigateToDetails = async (detailsViewModel) =>
             {

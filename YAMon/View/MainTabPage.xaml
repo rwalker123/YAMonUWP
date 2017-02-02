@@ -6,7 +6,6 @@
              BarBackgroundColor="{DynamicResource Primary}"
              BarTextColor="White"
             Title="YAMon">
-  <pages:BrowseItemsPage/>
-  <pages:MyItemsPage/>
-  <pages:AboutPage/>
+    <pages:BrowseItemsPage/>
+    <pages:AboutPage/>
 </TabbedPage>

@@ -37,5 +37,12 @@ namespace YAMon.ViewModel
             get { return title; }
             set { SetProperty(ref title, value); }
         }
+
+        private string m_breadCrumbSeperator = " > ";
+
+        protected string BuildBreadCrumb(INavigation nav, string currentPageTitle)
+        {
+            return nav.NavigationStack.Last().Title + m_breadCrumbSeperator + currentPageTitle;
+        }
     }
 }

@@ -20,10 +20,10 @@ namespace YAMon
             // Loads all reasources from App.xaml
             InitializeComponent();
 
-            if (DependencyService.Get<IStoreManager>().UseAuth && Settings.IsLoggedIn)
+            //if (DependencyService.Get<IStoreManager>().UseAuth && Settings.IsLoggedIn)
                 GoToMainPage();
-            else
-                GoToLogin();
+            //else
+            //    GoToLogin();
         }
 
         public static void GoToMainPage()

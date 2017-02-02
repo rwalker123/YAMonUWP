@@ -13,9 +13,12 @@ namespace YAMon.ViewModel
     {
         public Action<Model.Device> OnFinished { get; set; }
         public Model.Device Item { get; set; }
-        public DeviceDetailViewModel(Model.Device item = null)
+        public IReadOnlyList<Page> NavStack { get; }
+
+        public DeviceDetailViewModel(INavigation nav, Model.Device item = null)
         {
-            Title = item.Name;
+            NavStack = nav.NavigationStack;
+            Title = BuildBreadCrumb(nav, item.Name);
             Item = item;
             SaveCommand = new Command(async () => await ExecuteSaveCommand());
         }

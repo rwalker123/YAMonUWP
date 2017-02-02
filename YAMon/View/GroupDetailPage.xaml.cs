@@ -14,9 +14,31 @@ namespace YAMon.View
             BindingContext = this.viewModel = viewModel;
 
             this.viewModel.OnFinished += OnFinished;
+
+            viewModel.OnNavigateToDetails = async (detailsViewModel) =>
+            {
+                await Navigation.PushAsync(new DetailPage(detailsViewModel));
+            };
+
+        }
+        void OnItemSelected(object sender, SelectedItemChangedEventArgs args)
+        {
+            var item = args.SelectedItem as Model.Device;
+            if (item == null)
+                return;
+
+            viewModel.GoToDetailsCommand.Execute(item.Id);
+
+            // Manually deselect item
+            ListViewItems.SelectedItem = null;
         }
 
-        async void OnFinished(GroupDevice item)
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+        }
+
+        async void OnFinished(Model.Device item)
         {
             viewModel.OnFinished -= OnFinished;
             await Navigation.PopAsync();

@@ -16,13 +16,16 @@ namespace YAMon.ViewModel
     {
         const long MaxUsage = ByteToStringConverter.ONETB;
         long m_totalUsage = 0;
+        long m_totalUsageForecast = 0;
         double m_totalUsagePercent = 0.0;
+        INavigation m_navigation;
 
         public ObservableRangeCollection<GroupDevice> Items { get;}
         public Action<GroupDetailViewModel> OnNavigateToDetails { get; set; }
-        public BrowseItemsViewModel()
+        public BrowseItemsViewModel(INavigation nav)
         {
-            Title = "Groups and Devices";
+            m_navigation = nav;
+            Title = "Home";
             Items = new ObservableRangeCollection<GroupDevice>();
             LoadItemsCommand = new Command(ExecuteLoadItemsCommand);
             GoToDetailsCommand = new Command<string>(ExecuteGoToDetailsCommand);
@@ -81,6 +84,8 @@ namespace YAMon.ViewModel
 
                 Items.ReplaceRange(groupDevice.Values.OrderByDescending(x => x.TotalUsage).Select(x => x).ToList());
                 TotalUsage = totalUsage;
+                double dailyAvg = (double)TotalUsage / (double)DateTime.Now.Day;
+                TotalUsageForecast = (long)(dailyAvg * DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month));
                 TotalUsagePercent = (double)TotalUsage / (double)MaxUsage;
             }
             catch (Exception ex)
@@ -106,6 +111,12 @@ namespace YAMon.ViewModel
             set { SetProperty(ref m_totalUsage, value); }
         }
 
+        public long TotalUsageForecast
+        {
+            get { return m_totalUsageForecast; }
+            set { SetProperty(ref m_totalUsageForecast, value); }
+        }
+
         public double TotalUsagePercent
         {
             get { return m_totalUsagePercent; }
@@ -113,7 +124,7 @@ namespace YAMon.ViewModel
         }
 
         public Command<string> GoToDetailsCommand { get; }
-        GroupDetailViewModel detailsViewModel;
+
         void ExecuteGoToDetailsCommand(string id)
         {
             if (IsBusy)
@@ -121,15 +132,14 @@ namespace YAMon.ViewModel
 
             var selectedItem = Items.FirstOrDefault(i => i.Id == id);
 
-            detailsViewModel = new GroupDetailViewModel(selectedItem);
-            detailsViewModel.OnFinished += OnFinished;
+            var detailsViewModel = new GroupDetailViewModel(m_navigation, selectedItem);
+            //detailsViewModel.OnFinished += OnFinished;
 
             OnNavigateToDetails(detailsViewModel);
         }
 
         void OnFinished(GroupDevice item)
         {
-            detailsViewModel.OnFinished -= OnFinished;
         }
 
     }

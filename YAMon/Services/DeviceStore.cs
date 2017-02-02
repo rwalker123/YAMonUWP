@@ -5,7 +5,6 @@ using YAMon.Model;
 using System.Linq;
 using YAMon.Services.Standard;
 using System;
-using System.Linq;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.IO;

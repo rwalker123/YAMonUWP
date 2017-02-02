@@ -60,6 +60,8 @@
                             <Label Text="Total Usage:" />
                             <Label Text="{Binding TotalUsage, Converter={StaticResource MyByteToStringConverter}}" />
                             <Label Text="{Binding TotalUsagePercent, Converter={StaticResource MyPercentConverter}}" />
+                            <Label Text="Forecast Monthly Usage:" />
+                            <Label Text="{Binding TotalUsageForecast, Converter={StaticResource MyByteToStringConverter}}" />
                         </StackLayout>
                     </ListView.Footer>
                     <ListView.ItemTemplate>
